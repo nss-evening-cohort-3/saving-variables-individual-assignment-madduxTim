@@ -12,9 +12,6 @@ namespace SavingVariables.Tests.DAL
     [TestClass]
     public class VariableStoreTests
     {
-        Mock<SavedVariables> mock_context { get; set; }
-        VariableStore store { get; set; }
-
         /* Test below passes, but need to refactor point to Mock
         [TestMethod]
         public void CanCreateInstance()
@@ -22,8 +19,15 @@ namespace SavingVariables.Tests.DAL
             VariableStore store = new VariableStore();
             Assert.IsNotNull(store);
         */
-        //[TestMethod]
-        //public void 
+
+        //set up your Mock dbContext
+        private Mock<SavingVariablesContext> mock_context = new Mock<SavingVariablesContext>();
+        [TestMethod]
+        public void CanCreateInstance()
+        {
+            VariableStore store = new VariableStore(mock_context.Object);
+            Assert.IsNotNull(store);
+        }
     }
 }
 

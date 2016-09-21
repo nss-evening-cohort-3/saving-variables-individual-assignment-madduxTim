@@ -25,7 +25,6 @@ namespace SavingVariables
                     Console.WriteLine("Ok. See you later.");
                     Thread.Sleep(1500);
                     @switch = false;
-
                 }
                 else
                 {

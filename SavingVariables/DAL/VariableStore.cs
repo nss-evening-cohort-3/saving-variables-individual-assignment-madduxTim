@@ -8,6 +8,21 @@ namespace SavingVariables.DAL
 {
     public class VariableStore
     {
+        /* Dependency injection -- In order for your repository to use 
+        your dbcontext, make the constructor of your repository class
+        take a an instance of dbcontext class a parameter, and assign 
+        the dbcontext being in to a property on the repo class. 
+        */
+        public SavingVariablesContext Context { get; set; }
+        public VariableStore()
+        {
+            Context = new SavingVariablesContext();
+        }
+        public VariableStore(SavingVariablesContext _context)
+        {
+            Context = _context;
+        }
+
         // "a = 4" --> adds a and value to dictionary (create)
         // "clear a" --> deletes value of a (delete) 
         // "a" --> shows value of a (read)
