@@ -10,6 +10,6 @@ namespace SavingVariables
 {
     public class SavingVariablesContext : DbContext
     {
-		public virtual DbSet<SavedVariables> SavedVariables {get;set;}
+		public virtual DbSet<SavedVariable> SavedVariables {get;set;}
     }
 }

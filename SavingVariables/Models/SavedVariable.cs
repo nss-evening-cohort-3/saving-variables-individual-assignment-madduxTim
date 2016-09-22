@@ -2,7 +2,7 @@
 
 namespace SavingVariables.Models
 {
-    public class SavedVariables
+    public class SavedVariable
     {
         [Key]
         public int ID { get; set; }

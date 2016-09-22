@@ -58,7 +58,7 @@
       <DependentUpon>201609200116526_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\SavedVariables.cs" />
+    <Compile Include="Models\SavedVariable.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
