@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using SavingVariables.Models;
 
 namespace SavingVariables.DAL
 {
@@ -22,6 +22,12 @@ namespace SavingVariables.DAL
         {
             Context = _context;
         }
+
+        public List<SavedVariable> GetAll()
+        {
+            return Context.SavedVariables.ToList();
+        }
+
 
         // "a = 4" --> adds a and value to dictionary (create)
         // "clear a" --> deletes value of a (delete) 

@@ -4,15 +4,16 @@ namespace SavingVariables.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using SavingVariables.DAL;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<SavingVariables.SavingVariablesContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<SavingVariables.DAL.SavingVariablesContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(SavingVariables.SavingVariablesContext context)
+        protected override void Seed(SavingVariables.DAL.SavingVariablesContext context)
         {
             //  This method will be called after migrating to the latest version.
 

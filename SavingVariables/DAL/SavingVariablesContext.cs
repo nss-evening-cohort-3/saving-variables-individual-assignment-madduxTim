@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SavingVariables
+namespace SavingVariables.DAL
 {
     public class SavingVariablesContext : DbContext
     {
