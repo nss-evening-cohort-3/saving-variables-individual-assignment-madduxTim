@@ -13,94 +13,93 @@ namespace SavingVariables.Tests.DAL
     [TestClass]
     public class VariableStoreTests
     {
-        //set up Mock dbContext
-        public Mock<SavingVariablesContext> mock_context = new Mock<SavingVariablesContext>();
-        public Mock<DbSet<SavedVariable>> saved_variables = new Mock<DbSet<SavedVariable>>();
-        VariableStore repo { get; set; }
+        Mock<SavingVariablesContext> mock_context { get; set; }
+        Mock<DbSet<SavedVariable>> mock_var_table { get; set; }
         List<SavedVariable> var_list { get; set; } // Fake 
-        // A couple fake variables to play with for testing.
-        [TestInitialize] // gets run before each test method
+        VariableRepository repo { get; set; }
+
+        [TestInitialize]
         public void Initialize()
         {
+            mock_context = new Mock<SavingVariablesContext>();
+            mock_var_table = new Mock<DbSet<SavedVariable>>();
+            var_list = new List<SavedVariable>(); // Fake 
+            repo = new VariableRepository(mock_context.Object);
             MocksSetup();
-            //mock_context = new Mock<VariableStore>();
-            //mock_variable_table = new Mock<DbSet<SavedVariable>>();
-            //mock_variable_list = new List<SavedVariable>(); //Fake
-            repo = new VariableStore();
-
         }
-        List<SavedVariable> mock_variables_list = new List<SavedVariable>
-        {
-            new SavedVariable { ID = 1, Name = "a", Value = 1 },
-            new SavedVariable { ID = 2, Name = "b", Value = 2 },
-            new SavedVariable { ID = 3, Name = "c", Value = 3 }
-        };
+        
         public void MocksSetup()
         {
             // setting up mock DbSets
             // when implemented, methods on Mock DbSets, the application
             // should use the methods that are on the list_queryable IQueryable instead 
-            var list_queryable = mock_variables_list.AsQueryable();
-            saved_variables.As<IQueryable<SavedVariable>>().Setup(x => x.Provider).Returns(list_queryable.Provider);
-            saved_variables.As<IQueryable<SavedVariable>>().Setup(x => x.Expression).Returns(list_queryable.Expression);
-            saved_variables.As<IQueryable<SavedVariable>>().Setup(x => x.ElementType).Returns(list_queryable.ElementType);
-            saved_variables.As<IQueryable<SavedVariable>>().Setup(x => x.Provider).Returns(list_queryable.Provider);
-            mock_context.Setup(x => x.SavedVariables).Returns(saved_variables.Object);
-            saved_variables.Setup(x => x.Add(It.IsAny<SavedVariable>())).Callback((SavedVariable saved_var) => mock_variables_list.Add(thing));
+            var list_queryable = var_list.AsQueryable();
+
+            // This 'lies' to LINQ, making it think that our new list_queryable is a database table. 
+            mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.Provider).Returns(list_queryable.Provider);
+            mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.Expression).Returns(list_queryable.Expression);
+            mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.ElementType).Returns(list_queryable.ElementType);
+            mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.Provider).Returns(list_queryable.Provider);
+            
+            // SavedVariables property returns our list_queryable (aka fake database table) 
+            mock_context.Setup(x => x.SavedVariables).Returns(mock_var_table.Object);
+            mock_var_table.Setup(x => x.Add(It.IsAny<SavedVariable>())).Callback((SavedVariable saved_var) => var_list.Add(saved_var));
+            // Remove
         }
 
+        [TestCleanup] // need to read about this. "don't use code you don't understand."
+        public void TearDown()
+        {
+            repo = null;
+        }
 
         // Test below passes, but need to refactor point to Mock
         [TestMethod]
         public void CanCreateInstance()
         {
-            VariableStore store = new VariableStore();
-            Assert.IsNotNull(store);
+            VariableRepository repo = new VariableRepository();
+            Assert.IsNotNull(repo);
         }        
 
         [TestMethod]
         public void CanCreateMockInstance()
         {
-            VariableStore store = new VariableStore(mock_context.Object);
-            Assert.IsNotNull(store);
+            VariableRepository repo = new VariableRepository();
+            SavingVariablesContext actual_context = repo.Context;
+            Assert.IsInstanceOfType(actual_context, typeof(SavingVariablesContext));
         }
+
         [TestMethod]
-        public void CanMockDbSet()
-        {
-            //
-        }
-        [TestMethod]
-        public void CanGetAllSavedVars()
+        public void CheckRepoEmpty()
         {
             //Arrange
-            // see above. maybe refactor later to get actual nums?
-            //mock_context = new Mock<SavingVariablesContext>();
-            //repo = new VariableStore(mock_context.Object);
-            
+
             //Act
-            List<SavedVariable> actualVariables = repo.GetAll();
+            List<SavedVariable> actual_vars = repo.GetAll();
             int expected = 0;
-            int actualVariablesCount = actualVariables.Count;
+            int actual = actual_vars.Count;
 
             //Assert
-            Assert.AreEqual(actualVariablesCount, expected);
+            Assert.AreEqual(expected, actual);
         }
+
         [TestMethod]
-        public void CanAddSavedVars()
+        public void CanAddVars()
         {
             //Arrange
-
+            SavedVariable testVar = new SavedVariable { ID = 1, Name = "a", Value = 1 };
             //Act
-            SavedVariable testVar = new SavedVariable
-            {
-                ID = 1,
-                Name= "a",
-                Value = 1
-            };
-
+            repo.AddVar(testVar);
+            int actual_vars_count = repo.GetAll().Count;
+            int expected = 1;
             //Assert
-            repo.Add(testVar);
+            Assert.AreEqual(expected, actual_vars_count);
+        }
+
+        [TestMethod]
+        public void CanRemoveVars()
+        {
+
         }
     }
 }
-

@@ -6,7 +6,7 @@ using SavingVariables.Models;
 
 namespace SavingVariables.DAL
 {
-    public class VariableStore
+    public class VariableRepository
     {
         /* Dependency injection -- In order for your repository to use 
         your dbcontext, make the constructor of your repository class
@@ -14,18 +14,24 @@ namespace SavingVariables.DAL
         the dbcontext being in to a property on the repo class. 
         */
         public SavingVariablesContext Context { get; set; }
-        public VariableStore()
+        public VariableRepository()
         {
             Context = new SavingVariablesContext();
         }
-        public VariableStore(SavingVariablesContext _context)
+        public VariableRepository(SavingVariablesContext _context)
         {
             Context = _context;
         }
 
-        public List<SavedVariable> GetAll()
+        public List<SavedVariable> GetAll() // <------ AKA 'Read'
         {
             return Context.SavedVariables.ToList();
+        }
+
+        public void AddVar(SavedVariable @var) // <----- AKA 'Create'
+        {
+            Context.SavedVariables.Add(@var);
+            Context.SaveChanges();
         }
 
 
