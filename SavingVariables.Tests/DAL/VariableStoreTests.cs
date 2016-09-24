@@ -34,17 +34,16 @@ namespace SavingVariables.Tests.DAL
             // when implemented, methods on Mock DbSets, the application
             // should use the methods that are on the list_queryable IQueryable instead 
             var list_queryable = var_list.AsQueryable();
-
             // This 'lies' to LINQ, making it think that our new list_queryable is a database table. 
             mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.Provider).Returns(list_queryable.Provider);
             mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.Expression).Returns(list_queryable.Expression);
             mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.ElementType).Returns(list_queryable.ElementType);
             mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.Provider).Returns(list_queryable.Provider);
-            
             // SavedVariables property returns our list_queryable (aka fake database table) 
             mock_context.Setup(x => x.SavedVariables).Returns(mock_var_table.Object);
-            mock_var_table.Setup(x => x.Add(It.IsAny<SavedVariable>())).Callback((SavedVariable saved_var) => var_list.Add(saved_var));
-            // Remove
+            mock_var_table.Setup(x => x.Add(It.IsAny<SavedVariable>())).Callback((SavedVariable a) => var_list.Add(a));
+            mock_var_table.Setup(x => x.Remove(It.IsAny<SavedVariable>())).Callback((SavedVariable b) => var_list.Remove(b));
+            // something for replace?
         }
 
         [TestCleanup] // need to read about this. "don't use code you don't understand."
@@ -73,12 +72,10 @@ namespace SavingVariables.Tests.DAL
         public void CheckRepoEmpty()
         {
             //Arrange
-
             //Act
-            List<SavedVariable> actual_vars = repo.GetAll();
+            List<SavedVariable> actual_vars = repo.GetVars();
             int expected = 0;
             int actual = actual_vars.Count;
-
             //Assert
             Assert.AreEqual(expected, actual);
         }
@@ -90,16 +87,42 @@ namespace SavingVariables.Tests.DAL
             SavedVariable testVar = new SavedVariable { ID = 1, Name = "a", Value = 1 };
             //Act
             repo.AddVar(testVar);
-            int actual_vars_count = repo.GetAll().Count;
+            int actual_vars_count = repo.GetVars().Count;
             int expected = 1;
             //Assert
             Assert.AreEqual(expected, actual_vars_count);
         }
 
         [TestMethod]
+        public void CanTargetVar()
+        {
+            //Arrange
+            var_list.Add(new SavedVariable { ID = 1, Name = "a", Value = 1 });
+            var_list.Add(new SavedVariable { ID = 2, Name = "b", Value = 2 });
+            var_list.Add(new SavedVariable { ID = 3, Name = "c", Value = 3 });
+            //Act
+            string var_name = "c";
+            SavedVariable actual_var = repo.TargetVar(var_name);
+            //Assert
+            int expected = 3;
+            int actual = actual_var.ID;
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
         public void CanRemoveVars()
         {
-
+            //Arrange
+            var_list.Add(new SavedVariable { ID = 1, Name = "a", Value = 1 });
+            var_list.Add(new SavedVariable { ID = 2, Name = "b", Value = 2 });
+            var_list.Add(new SavedVariable { ID = 3, Name = "c", Value = 3 });
+            //Act
+            string var_name = "c";
+            SavedVariable removed_var = repo.RemoveVar(var_name);
+            int expected = 2;
+            int actual = repo.GetVars().Count;
+            //Assert
+            Assert.AreEqual(expected, actual);
         }
     }
 }

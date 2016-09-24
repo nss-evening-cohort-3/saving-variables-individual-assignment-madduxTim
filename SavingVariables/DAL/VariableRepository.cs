@@ -23,7 +23,7 @@ namespace SavingVariables.DAL
             Context = _context;
         }
 
-        public List<SavedVariable> GetAll() // <------ AKA 'Read'
+        public List<SavedVariable> GetVars() // <------ AKA 'Read'
         {
             return Context.SavedVariables.ToList();
         }
@@ -33,9 +33,27 @@ namespace SavingVariables.DAL
             Context.SavedVariables.Add(@var);
             Context.SaveChanges();
         }
+        public SavedVariable TargetVar(string var_name)
+        {
+            //SavedVariable target = Context.SavedVariables.FirstOrDefault(a => Convert.ToInt32(a.ID) == Convert.ToInt32(id)); 
+            // ^^^^ First attempt trying to search for ID.No worky. The param was an int called "id". ^^^^^
+            SavedVariable target = Context.SavedVariables.FirstOrDefault(a => a.Name.ToLower() == var_name.ToLower());
+            return target;
+        }
+        public SavedVariable RemoveVar(string var_name) // <----- AKA 'Delete' 
+        {
+            SavedVariable found_var = TargetVar(var_name);
+            if (found_var != null)
+            {
+                Context.SavedVariables.Remove(found_var);
+                Context.SaveChanges();  
+            }
+            return found_var;
+        }
 
 
-        // "a = 4" --> adds a and value to dictionary (create)
+
+        // "a = 4" --> adds a and value to list (create)
         // "clear a" --> deletes value of a (delete) 
         // "a" --> shows value of a (read)
         // "clear all" || "remove all" || "delete all" --> removes all saved entries from database (delete)
