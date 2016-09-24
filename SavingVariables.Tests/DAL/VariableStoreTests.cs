@@ -38,7 +38,7 @@ namespace SavingVariables.Tests.DAL
             mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.Provider).Returns(list_queryable.Provider);
             mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.Expression).Returns(list_queryable.Expression);
             mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.ElementType).Returns(list_queryable.ElementType);
-            mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.Provider).Returns(list_queryable.Provider);
+            mock_var_table.As<IQueryable<SavedVariable>>().Setup(x => x.GetEnumerator()).Returns(() => list_queryable.GetEnumerator());
             // SavedVariables property returns our list_queryable (aka fake database table) 
             mock_context.Setup(x => x.SavedVariables).Returns(mock_var_table.Object);
             mock_var_table.Setup(x => x.Add(It.IsAny<SavedVariable>())).Callback((SavedVariable a) => var_list.Add(a));
@@ -46,11 +46,11 @@ namespace SavingVariables.Tests.DAL
             // something for replace?
         }
 
-        [TestCleanup] // need to read about this. "don't use code you don't understand."
-        public void TearDown()
-        {
-            repo = null;
-        }
+        //[TestCleanup] // need to read about this. "don't use code you don't understand."
+        //public void TearDown()
+        //{
+        //    repo = null;
+        //}
 
         // Test below passes, but need to refactor point to Mock
         [TestMethod]
@@ -73,7 +73,7 @@ namespace SavingVariables.Tests.DAL
         {
             //Arrange
             //Act
-            List<SavedVariable> actual_vars = repo.GetVars();
+            List<SavedVariable> actual_vars = repo.GetVars();             
             int expected = 0;
             int actual = actual_vars.Count;
             //Assert
