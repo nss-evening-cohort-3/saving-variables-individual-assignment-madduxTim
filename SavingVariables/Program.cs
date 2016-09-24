@@ -14,7 +14,7 @@ namespace SavingVariables
         {
             InputHandler input_handler = new InputHandler();
             Console.WriteLine("Let's get to savin' some variables!");
-            while (input_handler.@switch == true)
+            while (input_handler.@switch)
             {
                 string linePrompt = ">> ";
                 Console.Write(linePrompt);

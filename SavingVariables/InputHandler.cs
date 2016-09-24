@@ -12,16 +12,29 @@ namespace SavingVariables
         public bool @switch = true;
         public void InputSwitch(string input)
         {
-        //    if (input == "exit" | input == "quit")
-        //    {
-        //        Console.WriteLine("Ok. See you later.");
-        //        Thread.Sleep(1500);
-        //        @switch = false;
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("ok, repeat.");
-        //    }
+            switch (input.Trim())
+            {
+                case "exit":
+                case "quit":
+                    Console.WriteLine("Peace.");
+                    Thread.Sleep(800);
+                    @switch = false;
+                    break;
+                case "lastq":
+                    Console.WriteLine("method for repeating the last input");
+                    break;
+                case "show all":
+                    Console.WriteLine("method for showing all variables/values");
+                    break;
+                case "clear all":
+                case "remove all":
+                case "delete all":
+                    Console.WriteLine("method for deleting all vars");
+                    break;
+                default:
+                    Console.WriteLine("Probably use this for further evaluating");
+                    break;
+            }
         }
     }
 }
