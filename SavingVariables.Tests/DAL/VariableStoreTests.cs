@@ -94,6 +94,19 @@ namespace SavingVariables.Tests.DAL
         }
 
         [TestMethod]
+        public void CanAddVarsWithArgs()
+        {
+            //Arrange
+            //Act
+            repo.AddVar("f", 15);
+            List<SavedVariable> list = repo.GetVars();
+            string expected = "f";
+            string actual = list.First().Name;
+            //Assert
+            Assert.IsTrue(expected == actual);
+        }
+
+        [TestMethod]
         public void CanTargetVar()
         {
             //Arrange

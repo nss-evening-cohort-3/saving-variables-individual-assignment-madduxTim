@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SavingVariables.Models;
 
 namespace SavingVariables.DAL
 {
     public class VariableRepository
-    {
-        /* Dependency injection -- In order for your repository to use 
-        your dbcontext, make the constructor of your repository class
-        take a an instance of dbcontext class a parameter, and assign 
-        the dbcontext being in to a property on the repo class. 
-        */
+    { 
+        // Dependency injection -- In order for your repository to use your dbcontext, make the constructor of your repository class take a an instance of dbcontext class a parameter, and assign the dbcontext being in to a property on the repo class. 
         public SavingVariablesContext Context { get; set; }
         public VariableRepository()
         {
@@ -30,8 +25,15 @@ namespace SavingVariables.DAL
 
         public void AddVar(SavedVariable @var) // <----- AKA 'Create'
         {
+            //SavedVariable added_var = new SavedVariable();
             Context.SavedVariables.Add(@var);
             Context.SaveChanges();
+        }
+        public void AddVar(string var_name, int value)
+        {
+            SavedVariable savedvariable = new SavedVariable { Name = var_name, Value = value };
+            Context.SavedVariables.Add(savedvariable);
+            Context.SaveChanges();          
         }
         public SavedVariable TargetVar(string var_name)
         {
@@ -51,9 +53,7 @@ namespace SavingVariables.DAL
             return found_var;
         }
 
-
-
-        // "a = 4" --> adds a and value to list (create)
+        // "a = 4" --> adds a and value to table (create)
         // "clear a" --> deletes value of a (delete) 
         // "a" --> shows value of a (read)
         // "clear all" || "remove all" || "delete all" --> removes all saved entries from database (delete)

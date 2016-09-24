@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DAL\VariableRepository.cs" />
+    <Compile Include="InputHandler.cs" />
     <Compile Include="Migrations\201609200116526_InitialCreate.cs" />
     <Compile Include="Migrations\201609200116526_InitialCreate.Designer.cs">
       <DependentUpon>201609200116526_InitialCreate.cs</DependentUpon>

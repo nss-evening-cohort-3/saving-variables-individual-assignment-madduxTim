@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SavingVariables.DAL;
 
 namespace SavingVariables
 {
@@ -11,25 +12,14 @@ namespace SavingVariables
     {
         static void Main(string[] args)
         {
+            InputHandler input_handler = new InputHandler();
             Console.WriteLine("Let's get to savin' some variables!");
-            bool @switch = true;
-            //int counter = 0;
-            while (@switch == true)
+            while (input_handler.@switch == true)
             {
                 string linePrompt = ">> ";
                 Console.Write(linePrompt);
                 string input = Console.ReadLine().ToLower();
-                //counter += 1;
-                if (input == "exit" | input == "quit")
-                {
-                    Console.WriteLine("Ok. See you later.");
-                    Thread.Sleep(1500);
-                    @switch = false;
-                }
-                else
-                {
-                    Console.WriteLine("ok, repeat.");
-                }
+                input_handler.InputSwitch(input);                
             }
         }
     }
