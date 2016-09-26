@@ -16,8 +16,7 @@ namespace SavingVariables
             Console.WriteLine("Let's get to savin' some variables!");
             while (input_handler.@switch)
             {
-                string linePrompt = ">> ";
-                Console.Write(linePrompt);
+                Console.Write(">> ");
                 string input = Console.ReadLine().ToLower();
                 input_handler.InputSwitch(input);                
             }
