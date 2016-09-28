@@ -69,7 +69,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="InputHandlerTests.cs" />
+    <Compile Include="DAL\InputHandlerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DAL\VariableStoreTests.cs" />
   </ItemGroup>

@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using SavingVariables.DAL;
 
 namespace SavingVariables
 {
-    class InputHandler
+    public class InputHandler
     {
         //switch bool kills the program 
         public bool @switch = true;
         //stores the lastq 
-        string lastq = "Nothing to see here, yet. Check back one more time to see your last request.";
+        private string lastq = "Nothing to see here, yet. Check back one more time to see your last request.";
         //This first switch statement is for initially sorting input options 
         public void InputSwitch(string input)
         {
@@ -40,21 +37,48 @@ namespace SavingVariables
                     lastq = input;
                     break;
                 default:
-                    RegexSorter(input);
+                    RegexSorter(input.Trim());
                     lastq = input;
                     break;
             }
         }
         //this regex is looking for a Variable of 1 letter and a value 
         //of any numeric value between 1 and 3 digits
-        string myRegex = @"^(?<Var>[a-z]{1})\s*\=\s*(?<Num>[0-9]{1,3})$";
+        public string addRegex = @"^(?<Var>[a-z]{1})\s*\=\s*(?<Num>[0-9]{1,3})$";
+        public string delRegex = @"^clear\s*(?<Var>[a-z]{1})$";
+        public string showRegex = @"^(?<Var>[a-z]{1})$";
+        VariableRepository repo = new VariableRepository();
         //this second sorting method matches regex and begins saving process. 
         public void RegexSorter(string input)
         {
-            Regex regex = new Regex(myRegex);
-            if (regex.IsMatch(input))
+            Regex regexAdd = new Regex(addRegex);
+            Regex regexDel = new Regex(delRegex);
+            Regex regexShow = new Regex(showRegex);
+            Match showVarCapture = regexShow.Match(input);
+            Match addVarCapture = regexAdd.Match(input);
+            Match addValueCapture = regexAdd.Match(input);
+            if (regexAdd.IsMatch(input))
             {
-                Console.WriteLine("Now we're cooking with grease!");
+                string varMatch = addVarCapture.Groups["Var"].Value;
+                int valueMatch = Convert.ToInt32(addValueCapture.Groups["Num"].Value);
+                repo.AddVar(varMatch, valueMatch);
+                //Console.WriteLine($" Nice work! {varMatch} now equals {valueMatch}");
+            }
+            else if (regexDel.IsMatch(input))
+            {
+                Console.WriteLine("Delete!");
+            }
+            else if (regexShow.IsMatch(input))
+            {
+                string varMatch = showVarCapture.Groups["Var"].Value;
+                var allVars = repo.GetVars();
+                foreach (var savedVar in allVars)
+                {
+                    Console.WriteLine($"{savedVar.Name} = {savedVar.Value}");
+                }
+                Console.WriteLine(repo.GetVars());
+                //Console.WriteLine(allVars);
+                //Console.WriteLine($"Show! = {varMatch}");
             }
             else
             {

@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using SavingVariables.DAL;
 
 namespace SavingVariables
 {
@@ -12,13 +6,13 @@ namespace SavingVariables
     {
         static void Main(string[] args)
         {
-            InputHandler input_handler = new InputHandler();
+            InputHandler inputHandler = new InputHandler();
             Console.WriteLine("Let's get to savin' some variables!");
-            while (input_handler.@switch)
+            while (inputHandler.@switch)
             {
                 Console.Write(">> ");
                 string input = Console.ReadLine().ToLower();
-                input_handler.InputSwitch(input);                
+                inputHandler.InputSwitch(input);
             }
         }
     }
