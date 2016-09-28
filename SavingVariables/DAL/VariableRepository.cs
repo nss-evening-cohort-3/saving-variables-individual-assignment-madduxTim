@@ -51,13 +51,5 @@ namespace SavingVariables.DAL
             }
             return found_var;
         }
-
-        // "a = 4" --> adds a and value to table (create)
-        // "clear a" --> deletes value of a (delete) 
-        // "a" --> shows value of a (read)
-        // "clear all" || "remove all" || "delete all" --> removes all saved entries from database (delete)
-        // "lastq" --> prints the last entered command or expression even if it was unsuccessful (read) 
-        // "show all" --> reads all of the vars and their values (read) 
-        // "exit" || "quit" --> closes the program 
     }
 }

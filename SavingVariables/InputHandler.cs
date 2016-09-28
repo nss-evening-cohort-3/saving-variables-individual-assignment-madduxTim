@@ -27,13 +27,20 @@ namespace SavingVariables
                     lastq = input;
                     break;
                 case "show all":
-                    Console.WriteLine("method for showing all variables/values");
+                    foreach (var savedVar in repo.GetVars())
+                    {
+                        Console.WriteLine($"{savedVar.Name} = {savedVar.Value}");
+                    };
                     lastq = input;
                     break;
                 case "clear all":
                 case "remove all":
                 case "delete all":
-                    Console.WriteLine("method for deleting all vars");
+                    foreach (var savedVar in repo.GetVars())
+                    {
+                        repo.RemoveVar(savedVar.Name);
+                    }
+                    Console.WriteLine("All variables deleted. Blammo!");
                     lastq = input;
                     break;
                 default:
@@ -54,36 +61,98 @@ namespace SavingVariables
             Regex regexAdd = new Regex(addRegex);
             Regex regexDel = new Regex(delRegex);
             Regex regexShow = new Regex(showRegex);
-            Match showVarCapture = regexShow.Match(input);
-            Match addVarCapture = regexAdd.Match(input);
-            Match addValueCapture = regexAdd.Match(input);
+            // if there's a match between input and the regex called regexAdd, create the new variable and value.
             if (regexAdd.IsMatch(input))
             {
-                string varMatch = addVarCapture.Groups["Var"].Value;
-                int valueMatch = Convert.ToInt32(addValueCapture.Groups["Num"].Value);
-                repo.AddVar(varMatch, valueMatch);
-                //Console.WriteLine($" Nice work! {varMatch} now equals {valueMatch}");
+                RegexHandlerAdd(input);
             }
             else if (regexDel.IsMatch(input))
             {
-                Console.WriteLine("Delete!");
+                RegexHandlerDelete(input);
             }
             else if (regexShow.IsMatch(input))
             {
-                string varMatch = showVarCapture.Groups["Var"].Value;
-                var allVars = repo.GetVars();
-                foreach (var savedVar in allVars)
-                {
-                    Console.WriteLine($"{savedVar.Name} = {savedVar.Value}");
-                }
-                Console.WriteLine(repo.GetVars());
-                //Console.WriteLine(allVars);
-                //Console.WriteLine($"Show! = {varMatch}");
+                RegexHandlerShow(input);
             }
             else
             {
                 Console.WriteLine(" Your input is incorrect. \n Try setting a one-letter variable to one-to-three digit numeral. \n Ex: \"h = 753\"");
             }
         }
+        public void RegexHandlerAdd(string input)
+        {
+            Regex regexAdd = new Regex(addRegex);
+            Match addVarCapture = regexAdd.Match(input);
+            Match addValueCapture = regexAdd.Match(input);
+            string varMatch = addVarCapture.Groups["Var"].Value;
+            int valueMatch = Convert.ToInt32(addValueCapture.Groups["Num"].Value);
+            bool isMatch = false;
+            foreach (var savedVar in repo.GetVars())
+            {
+                if (savedVar.Name == varMatch)
+                {
+                    Console.WriteLine("Sorry, looks like that letter is already assigned a value.");
+                    isMatch = true;
+                }
+            }
+            if (!isMatch)
+            {
+                Console.WriteLine($"Awesome possum! {varMatch} now equals {valueMatch}");
+                repo.AddVar(varMatch, valueMatch);
+            }
+        }
+        public void RegexHandlerShow(string input)
+        {
+            Regex regexShow = new Regex(showRegex);
+            Match showVarCapture = regexShow.Match(input);
+            string varMatch = showVarCapture.Groups["Var"].Value;
+            bool isMatch = false;
+            foreach (var savedVar in repo.GetVars())
+            {
+                if (savedVar.Name == varMatch)
+                {
+                    Console.WriteLine($"{savedVar.Name} = {savedVar.Value}");
+                    isMatch = true;
+                }
+            }
+            if (!isMatch)
+            {
+                Console.WriteLine("Sorry, that character hasn't been assigned yet.");
+            }
+        }
+        public void RegexHandlerDelete(string input)
+        {
+            Regex regexDel = new Regex(delRegex);
+            Match deleteVarCapture = regexDel.Match(input);
+            string varMatch = deleteVarCapture.Groups["Var"].Value;
+            bool isMatch = false;
+            foreach (var savedVar in repo.GetVars())
+            {
+                if (savedVar.Name == varMatch)
+                {
+                    Console.WriteLine($"{varMatch} has been cleared.");
+                    isMatch = true;
+                    repo.RemoveVar(varMatch);
+                }
+            }
+            if (!isMatch)
+            {
+                Console.WriteLine("Sorry, that character hasn't been assigned yet.");
+            }
+        }
     }
 }
+
+    // ----------- * Program input reqs: * ----------- //
+
+                          /*
+                          
+     "a = 4" --> adds a and value to table (create)
+     "clear a" --> deletes value of a (delete) 
+     "a" --> shows value of a (read)
+     "clear all" || "remove all" || "delete all" --> removes all saved entries from database (delete)
+     "lastq" --> prints the last entered command or expression even if it was unsuccessful (read) 
+     "show all" --> reads all of the vars and their values (read) 
+     "exit" || "quit" --> closes the program 
+     
+                          */
